@@ -4,27 +4,46 @@ using UnityEngine;
 
 public class GoombaCollide : MonoBehaviour
 {
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        // 檢查是否碰到 Player
-        if (collision.gameObject.CompareTag("Player"))
+        // 檢查是否與玩家碰撞
+        if (other.CompareTag("Player"))
         {
-            // 檢查碰到的是哪個 Collider
-            foreach (ContactPoint contact in collision.contacts)
+            // 判斷是 Player 的哪個 Collider
+            if (other is CapsuleCollider)
             {
-                Collider hitCollider = contact.thisCollider;
-
-                if (hitCollider is CapsuleCollider)
-                {
-                    // Player 的 Capsule Collider
-                    Debug.Log("Goomba 碰觸到玩家，造成 damage！");
-                }
-                else if (hitCollider.name == "feet" && hitCollider is BoxCollider)
-                {
-                    // Player 的 feet 下的 Box Collider
-                    Debug.Log("Goomba 受到損傷！");
-                }
+                // 碰到 Capsule Collider，顯示 damage 訊息
+                Debug.Log("Goomba 碰到玩家");
+            }
+            else if (other is BoxCollider)
+            {
+                // 碰到 Box Collider，顯示 Goomba 損血訊息
+                Debug.Log("Goomba 被踩");
             }
         }
     }
+
+    // private void OnCollisionEnter(Collision collision)
+    // {
+    //     // 檢查是否碰到 Player
+    //     if (collision.gameObject.CompareTag("Player"))
+    //     {
+    //         // 檢查碰到的是哪個 Collider
+    //         foreach (ContactPoint contact in collision.contacts)
+    //         {
+    //             Collider hitCollider = contact.thisCollider;
+
+    //             if (hitCollider is CapsuleCollider)
+    //             {
+    //                 // Player 的 Capsule Collider
+    //                 Debug.Log("Goomba 碰到玩家");
+    //             }
+    //             else if (hitCollider is BoxCollider)
+    //             {
+    //                 // Player 的 feet 下的 Box Collider
+    //                 Debug.Log("Goomba 被踩");
+    //             }
+    //         }
+    //     }
+    // }
 }
