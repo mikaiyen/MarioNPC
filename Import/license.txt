@@ -1,0 +1,11 @@
+Model Information:
+* title:	Goomba
+* source:	https://sketchfab.com/3d-models/goomba-9aa2e033384142809a52fb0d711f4a15
+* author:	stankojacob787 (https://sketchfab.com/stankojacob787)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Goomba" (https://sketchfab.com/3d-models/goomba-9aa2e033384142809a52fb0d711f4a15) by stankojacob787 (https://sketchfab.com/stankojacob787) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
