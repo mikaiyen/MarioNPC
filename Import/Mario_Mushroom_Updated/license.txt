@@ -1,0 +1,11 @@
+Model Information:
+* title:	Mario Mushroom Updated
+* source:	https://sketchfab.com/3d-models/mario-mushroom-updated-b3dea6e2ac4e4b01af63c0c0b67415e1
+* author:	Mr A McBride (https://sketchfab.com/lobsterfuric)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Mario Mushroom Updated" (https://sketchfab.com/3d-models/mario-mushroom-updated-b3dea6e2ac4e4b01af63c0c0b67415e1) by Mr A McBride (https://sketchfab.com/lobsterfuric) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

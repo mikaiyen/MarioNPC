@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class GoombaCollide : MonoBehaviour
 {
+
+    private Vector3 originalScale; // 原始縮放比例
+    private void Start()
+    {
+        // 記錄 Goomba 原始的縮放比例
+        originalScale = transform.localScale;
+    }
     private void OnTriggerEnter(Collider other)
     {
         // 檢查是否與玩家碰撞
@@ -19,6 +26,7 @@ public class GoombaCollide : MonoBehaviour
             {
                 // 碰到 Box Collider，顯示 Goomba 損血訊息
                 Debug.Log("Goomba 被踩");
+                transform.localScale = new Vector3(originalScale.x, originalScale.y * 0.3f, originalScale.z);
             }
         }
     }
