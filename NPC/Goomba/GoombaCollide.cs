@@ -16,18 +16,16 @@ public class GoombaCollide : MonoBehaviour
         // 檢查是否與玩家碰撞
         if (other.CompareTag("Player"))
         {
-            // 判斷是 Player 的哪個 Collider
-            if (other is CapsuleCollider)
-            {
-                // 碰到 Capsule Collider，顯示 damage 訊息
-                Debug.Log("Goomba 碰到玩家");
-            }
-            else if (other is BoxCollider)
-            {
-                // 碰到 Box Collider，顯示 Goomba 損血訊息
-                Debug.Log("Goomba 被踩");
-                transform.localScale = new Vector3(originalScale.x, originalScale.y * 0.3f, originalScale.z);
-            }
+            // 碰到 Capsule Collider，顯示 damage 訊息
+            Debug.Log("Goomba 碰到玩家");
+        }
+
+
+        if (other.CompareTag("Feet"))
+        {
+            // 碰到 Box Collider，顯示 Goomba 損血訊息
+            Debug.Log("Goomba 被踩");
+            transform.localScale = new Vector3(originalScale.x, originalScale.y * 0.3f, originalScale.z);
         }
     }
 
