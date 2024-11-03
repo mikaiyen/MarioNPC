@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class GoombaCollide : MonoBehaviour
 {
-
+    public float bounceForce = 10f;           // 彈跳的力度
+    public float lifetime = 2f;
     private Vector3 originalScale; // 原始縮放比例
     private void Start()
     {
@@ -25,7 +26,17 @@ public class GoombaCollide : MonoBehaviour
         {
             // 碰到 Box Collider，顯示 Goomba 損血訊息
             Debug.Log("Goomba 被踩");
+
+            // 給玩家父物件一個向上的彈跳力
+            Rigidbody playerRigidbody = other.GetComponentInParent<Rigidbody>();
+            if (playerRigidbody != null)
+            {
+                playerRigidbody.AddForce(Vector3.up * bounceForce, ForceMode.Impulse);
+            }
+
             transform.localScale = new Vector3(originalScale.x, originalScale.y * 0.3f, originalScale.z);
+
+            Destroy(gameObject, lifetime);
         }
     }
 
