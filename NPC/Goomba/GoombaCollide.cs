@@ -15,7 +15,7 @@ public class GoombaCollide : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // 檢查是否與玩家碰撞
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Body"))
         {
             // 碰到 Capsule Collider，顯示 damage 訊息
             Debug.Log("Goomba 碰到玩家");

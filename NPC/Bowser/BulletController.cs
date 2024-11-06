@@ -35,7 +35,7 @@ public class BulletController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // 檢查是否與玩家碰撞
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Body"))
         {
             Debug.Log("player 被擊中");
             Destroy(gameObject);

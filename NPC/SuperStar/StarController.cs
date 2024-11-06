@@ -20,7 +20,7 @@ public class StarController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // 確認碰撞對象是否是玩家
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Body"))
         {
             //應該要去改變player的state
             Debug.Log("player get star!");

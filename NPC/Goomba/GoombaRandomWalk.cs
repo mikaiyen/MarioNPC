@@ -101,7 +101,7 @@ public class Goomba : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Body"))
         {
             Debug.Log("怪物觸碰到了玩家！");
         }
