@@ -7,16 +7,21 @@ public class BowserController : MonoBehaviour
     public GameObject projectilePrefab;   // 投擲的圓球預製件
     public float throwInterval = 3f;      // 投擲間隔時間
     public Transform Muzzle;
+    public float health = 20;
+    public Animator animator;
 
     private float timer;                  // 計時器
+    private bool hasBeenHit;              // 用來檢查是否已經觸發過受擊
 
     void Start()
     {
-        timer = throwInterval;  // 初始化計時器
+        timer = throwInterval;            // 初始化計時器
+        hasBeenHit = false;
     }
 
     void Update()
     {
+        bool hurtPressed = Input.GetKeyDown("k");  //這行用來測試庫巴的受擊反應
         timer -= Time.deltaTime;
 
         if (timer <= 0f)
@@ -24,28 +29,43 @@ public class BowserController : MonoBehaviour
             SpawnProjectile();
             timer = throwInterval;  // 重置計時器
         }
+
+        if (hurtPressed && !hasBeenHit)  //測試庫巴受擊反應
+        {
+            GetHit();
+            hasBeenHit = true; 
+        }
     }
 
     void SpawnProjectile()
     {
         // 創建發射物
+        animator.SetBool("isThrow", true);
         Instantiate(projectilePrefab, Muzzle.position, Quaternion.identity);
+        Invoke(nameof(ResetAnimation), 1f);
     }
 
-    // void ThrowProjectile()
-    // {
-    //     // 創建圓球並將其指向玩家位置
-    //     GameObject projectile = Instantiate(projectilePrefab, muzzle.position, Quaternion.identity);
-        
-    //     // 計算投擲方向
-    //     Vector3 direction = (player.position - muzzle.position).normalized;
-        
-    //     // 給圓球施加力，使其飛向玩家
-    //     Rigidbody rb = projectile.GetComponent<Rigidbody>();
-    //     if (rb != null)
-    //     {
-    //         rb.AddForce(direction * throwForce, ForceMode.Impulse);
-    //     }
-    //     Destroy(projectile, projectileLifetime);
-    // }
+    void GetHit()
+    {
+        animator.SetBool("isHurt", true);
+        health--;
+        Debug.Log("Bowser's health: " + health);
+        HandleDeath();
+        Invoke(nameof(ResetAnimation), 1f);
+    }
+
+    void HandleDeath()
+    {
+        if (health <= 0)
+        {
+            Destroy(gameObject, 1f);
+        }
+    }
+
+    void ResetAnimation()
+    {
+        animator.SetBool("isThrow", false);
+        animator.SetBool("isHurt", false);
+        hasBeenHit = false; // 重置 hasBeenHit，使得下一次可以再次受擊
+    }
 }
