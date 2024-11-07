@@ -25,7 +25,7 @@ public class MushroomController : MonoBehaviour
         {
             // 獲取玩家的父物件
             Transform playerParent = other.transform.root;
-
+            Debug.Log("player get mushroom!");
             // 讓玩家的父物件大小變為1.5倍
             playerParent.localScale *= scaleMultiplier;
             Invoke(nameof(ResetScale), 1f);
