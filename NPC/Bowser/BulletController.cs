@@ -1,47 +1,41 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
-    public float speed = 5f;              // 發射物的追蹤速度
-    public float lifetime = 5f;           // 發射物的存活時間
-    // private Transform target;             // 追蹤目標
-    private Vector3 TargetPosition; // 玩家初始位置
-    private Vector3 direction;
+    public float speed = 5f;               // 發射物的移動速度
+    public float lifetime = 5f;            // 發射物的存活時間
+
+    private Vector3 targetPosition;        // 玩家初始位置
+    private Vector3 direction;             // 發射物的移動方向
 
     void Start()
     {
-        // 自動找到玩家（確保玩家有 "Player" 標籤）
+        // 自動尋找玩家（假設玩家標籤為 "Player"）
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            TargetPosition = player.transform.position;
-            direction = (TargetPosition - transform.position).normalized;
-            transform.LookAt(TargetPosition);
+            targetPosition = player.transform.position;
+            direction = (targetPosition - transform.position).normalized;
+            transform.LookAt(targetPosition);  // 設置發射物面向目標
         }
 
-        // 在指定時間後銷毀發射物
-        Destroy(gameObject, lifetime);
+        Destroy(gameObject, lifetime);      // 在指定時間後自動銷毀
     }
 
     void Update()
     {
-        if (TargetPosition == null) return;
-        flying();
-        
+        MoveProjectile();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // 檢查是否與玩家碰撞
+        // 檢查是否碰到玩家或地面
         if (other.CompareTag("Body"))
         {
-            Debug.Log("player 被擊中");
+            Debug.Log("Player 被擊中");
             Destroy(gameObject);
         }
-
-        if (other.CompareTag("Ground"))
+        else if (other.CompareTag("Ground"))
         {
             Destroy(gameObject);
         }
@@ -49,13 +43,16 @@ public class BulletController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject);
+        Destroy(gameObject); // 任意碰撞都銷毀發射物
     }
 
-    private void flying(){
-        // 計算方向並移動發射物
+    private void MoveProjectile()
+    {
+        // 移動發射物並檢查是否接近目標位置
         transform.position += direction * speed * Time.deltaTime;
-        if (Vector3.Distance(transform.position, TargetPosition) < 0.2f)
+        
+        // 如果發射物接近目標，則銷毀
+        if (Vector3.Distance(transform.position, targetPosition) < 0.2f)
         {
             Destroy(gameObject);
         }
