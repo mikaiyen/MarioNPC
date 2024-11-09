@@ -20,7 +20,28 @@ public class GoombaCollide : MonoBehaviour
         // 檢查是否與玩家的 Body 碰撞
         if (other.CompareTag("Body") && playerRigidbody != null)
         {
+
+            BuffHandler buffHandler = other.GetComponentInParent<BuffHandler>();
+
+            if (buffHandler != null)
+            {
+                // 如果是 "isStar" 狀態，輾過 Goomba
+                if (buffHandler.isStar)
+                {
+                    TrampleGoomba();
+                    return;
+                }
+                // 如果是 "isMushroom" 狀態，輾過 Goomba 並重置 isMushroom 狀態
+                else if (buffHandler.isMushroom)
+                {
+                    buffHandler.ResetBuff();
+                    TrampleGoomba();
+                    return;
+                }
+            }
+
             Debug.Log("Goomba 碰到玩家");
+
 
             // 計算推力方向並施加推力
             Vector3 knockbackDirection = (playerRigidbody.transform.position - transform.position).normalized;
@@ -36,8 +57,14 @@ public class GoombaCollide : MonoBehaviour
             playerRigidbody.AddForce(Vector3.up * bounceForce, ForceMode.Impulse);
 
             // 壓扁 Goomba 並設定銷毀計時
-            transform.localScale = new Vector3(originalScale.x, originalScale.y * 0.3f, originalScale.z);
-            Destroy(gameObject, lifetime);
+            TrampleGoomba();
         }
+    }
+
+    private void TrampleGoomba()
+    {
+        // 壓扁 Goomba 並設定銷毀計時
+        transform.localScale = new Vector3(originalScale.x, originalScale.y * 0.3f, originalScale.z);
+        Destroy(gameObject, lifetime);
     }
 }

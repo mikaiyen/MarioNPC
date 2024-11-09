@@ -1,20 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Oculus.Interaction;
-using Unity.VisualScripting;
 
-public class movement : MonoBehaviour
+public class Movement : MonoBehaviour
 {
     public bool EnableLinearMovement = true;
     public bool EnableRotation = true;
     public bool HMDRotatesPlayer = true;
     public float RotationAngle = 45.0f;
     public float Speed = 0.0f;
+    public float JumpForce = 5.0f;             // 跳躍的力度
     public OVRCameraRig CameraRig;
 
     private bool ReadyToSnapTurn;
+    private bool isGrounded = true;             // 檢查是否在地面上
     private Rigidbody _rigidbody;
 
     public event Action CameraUpdated;
@@ -23,20 +22,17 @@ public class movement : MonoBehaviour
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        if (CameraRig == null) CameraRig = GetComponentInChildren<OVRCameraRig>();
-    }
-
-    void Start()
-    {
+        CameraRig ??= GetComponentInChildren<OVRCameraRig>();
     }
 
     private void FixedUpdate()
     {
-        if (CameraUpdated != null) CameraUpdated();
-        if (PreCharacterMove != null) PreCharacterMove();
+        CameraUpdated?.Invoke();
+        PreCharacterMove?.Invoke();
 
         if (HMDRotatesPlayer) RotatePlayerToHMD();
         if (EnableLinearMovement) JoystickMovement();
+        if (OVRInput.GetDown(OVRInput.Button.One) && isGrounded) Jump(); // 檢測 A 按鈕並執行跳躍
     }
 
     void RotatePlayerToHMD()
@@ -53,50 +49,33 @@ public class movement : MonoBehaviour
         root.rotation = prevRot;
     }
 
-    /*************************************************************************************************
-    TODO: Inplement StickMovement
-    Variables:
-    - cameraTransform (Transform): Transform of the camera or head representing the player's view
-    - moveDir (Vector3): The direction the player should move in
-    - primaryAxis (Vector2): Thumbstick input from the VR controller
-    - forward (Vector3): The forward vector of the camera
-    - right (Vector3): The right vector of the camera
-    - Speed (float): The speed at which the player should move (modify in the Unity Editor, not here)
-    - _rigidbody (Rigidbody): The Rigidbody component of the player
-    *************************************************************************************************/
     void JoystickMovement()
     {
-        // Initialize variables
-        Vector3 forward = Vector3.zero;
-        Vector3 right = Vector3.zero;
-
-        // Assume CameraRig is the VR Rig, and centerEyeAnchor is the camera or head representing the player's view.
         Transform cameraTransform = CameraRig.centerEyeAnchor; 
-        Vector3 moveDir = Vector3.zero;
-        // Get thumbstick input from the VR controller, using Oculus' OVRInput
         Vector2 primaryAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
-
-        // Hint:
-        // 1. Get the forward and right vectors of the camera. get the forward vector by using cameraTransform.forward for example.
-        forward = cameraTransform.forward;
-        right = cameraTransform.right;
-
-        // 2. Calculate the movement direction based on the thumbstick input and the "normalized" camera's forward and right vectors.
-        forward.y = 0;  // We don't want to move vertically, so we set the y component to 0
-        forward.Normalize();  // Normalize to ensure consistent movement speed regardless of camera tilt
-        right.y = 0;  // Ignore vertical movement
-        right.Normalize();
         
-        // 3. Multiply the movement direction by the Speed variable to control the speed of the player.
-        moveDir = (forward * primaryAxis.y + right * primaryAxis.x) * Speed;
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
 
-        // 4. Make sure to multiply the movement direction by Time.fixedDeltaTime to make the movement frame rate independent.
-        moveDir *= Time.fixedDeltaTime;
-
-        // 5. Use the Rigidbody component to move the player by setting its velocity to the movement direction. _rigidbody.MovePosition(Vector3 position) can be used to move the player.
+        forward.y = right.y = 0;  // 忽略垂直方向
+        Vector3 moveDir = (forward.normalized * primaryAxis.y + right.normalized * primaryAxis.x) * Speed * Time.fixedDeltaTime;
+        
         _rigidbody.MovePosition(_rigidbody.position + moveDir);
+    }
 
-        // Your code here:
-    
+    void Jump()
+    {
+        _rigidbody.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+        isGrounded = false;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {    
+        // 確保玩家只有在接觸地面時才可以跳躍
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            Debug.Log("back to ground");
+            isGrounded = true;
+        }
     }
 }
