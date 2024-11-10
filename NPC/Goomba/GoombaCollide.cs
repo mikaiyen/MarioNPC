@@ -8,9 +8,12 @@ public class GoombaCollide : MonoBehaviour
 
     private Vector3 originalScale;          // 原始縮放比例
 
+    AudioManager am;
+
     private void Start()
     {
         originalScale = transform.localScale; // 記錄 Goomba 原始縮放比例
+        am = GameObject.FindObjectOfType<AudioManager>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -42,6 +45,7 @@ public class GoombaCollide : MonoBehaviour
 
             Debug.Log("Goomba 碰到玩家");
 
+            am.playSFX(am.gethit);
 
             // 計算推力方向並施加推力
             Vector3 knockbackDirection = (playerRigidbody.transform.position - transform.position).normalized;
@@ -63,6 +67,15 @@ public class GoombaCollide : MonoBehaviour
 
     private void TrampleGoomba()
     {
+        // Disable all colliders on the Goomba
+        Collider[] colliders = GetComponents<Collider>();
+        foreach (Collider collider in colliders)
+        {
+            collider.enabled = false;
+        }
+
+        am.playSFX(am.enemydeath);
+
         // 壓扁 Goomba 並設定銷毀計時
         transform.localScale = new Vector3(originalScale.x, originalScale.y * 0.3f, originalScale.z);
         Destroy(gameObject, lifetime);

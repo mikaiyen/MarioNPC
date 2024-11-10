@@ -8,8 +8,11 @@ public class BulletController : MonoBehaviour
     private Vector3 targetPosition;        // 玩家初始位置
     private Vector3 direction;             // 發射物的移動方向
 
+    AudioManager am;
+
     void Start()
     {
+        am = GameObject.FindObjectOfType<AudioManager>();
         // 自動尋找玩家（假設玩家標籤為 "Player"）
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
@@ -33,6 +36,7 @@ public class BulletController : MonoBehaviour
         if (other.CompareTag("Body"))
         {
             Debug.Log("Player 被擊中");
+            am.playSFX(am.gethit);
             Destroy(gameObject);
         }
         else if (other.CompareTag("Ground"))

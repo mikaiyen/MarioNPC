@@ -12,11 +12,14 @@ public class BuffHandler : MonoBehaviour
     public bool isStar;
     public bool isMushroom;
 
+    AudioManager am;
+
     void Start()
     {
         originalScale = transform.localScale; // Save the original scale
         isStar=false;
         isMushroom=false;
+        am = GameObject.FindObjectOfType<AudioManager>();
     }
 
     // This method will be called when the mushroom collision is detected
@@ -26,6 +29,9 @@ public class BuffHandler : MonoBehaviour
         {
             return;
         }
+
+        am.playSFX(am.collectitem);
+
         // Scale up the player
         transform.localScale = originalScale * scaleMultiplier;
         isMushroom=true;
@@ -35,6 +41,8 @@ public class BuffHandler : MonoBehaviour
 
     public void ApplyStarBuff()
     {
+        am.playSFX(am.collectitem);
+        am.switchbgm(am.starbgm);
         isStar=true;
         Invoke(nameof(ResetBuff), buffDuration);
     }
@@ -43,6 +51,10 @@ public class BuffHandler : MonoBehaviour
 
     public void ResetBuff()
     {
+        if(isStar)
+        {
+            am.switchbgm(am.mainbgm);
+        }
         isMushroom=false;
         isStar=false;
         transform.localScale = originalScale; // Reset to the original scale

@@ -8,9 +8,12 @@ public class PipeTeleport : MonoBehaviour
     public GameObject pipe2; // pipe2 的位置
     private GameObject player;
 
+    AudioManager am;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        am = GameObject.FindObjectOfType<AudioManager>();
     }
 
     void Update()
@@ -44,5 +47,6 @@ public class PipeTeleport : MonoBehaviour
     {
         // 傳送玩家到指定位置
         player.transform.position = targetPosition;
+        am.playSFX(am.teleportSound);
     }
 }

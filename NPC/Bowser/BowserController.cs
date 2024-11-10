@@ -16,11 +16,16 @@ public class BowserController : MonoBehaviour
     private float timer;                   // 計時器
     private bool hasBeenHit;               // 是否觸發過受擊
     private Transform player;              // 玩家位置
+    private bool bossActivate=false;
+
+    AudioManager am;
 
     void Start()
     {
         timer = throwInterval;             // 初始化計時器
         hasBeenHit = false;
+
+        am = GameObject.FindObjectOfType<AudioManager>();
 
         // 找到場景中標記為 "Player" 的玩家物件
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -32,6 +37,13 @@ public class BowserController : MonoBehaviour
 
     void Update()
     {
+        if(!bossActivate)
+        {
+            checkStartBossFight();
+            return;
+        }
+        
+
         // 確保 Bowser 始終面向玩家
         if (player != null)
         {
@@ -56,9 +68,23 @@ public class BowserController : MonoBehaviour
         }
     }
 
+    private void checkStartBossFight()
+    {
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        // If the distance to the player is greater than maxDistance, return early
+        if (distanceToPlayer < 100f)
+        {
+            bossActivate=true;
+            am.switchbgm(am.bossbgm);
+        }
+        
+    }
+
     // 發射投擲物
     void SpawnProjectile()
     {
+        am.playSFX(am.shootbullet);
         animator.SetBool("isThrow", true);
         Instantiate(projectilePrefab, muzzle.position, Quaternion.identity);
         Invoke(nameof(ResetAnimation), 1f); // 重置投擲動畫
@@ -69,6 +95,7 @@ public class BowserController : MonoBehaviour
     {
         animator.SetBool("isHurt", true);
         health--;
+        am.playSFX(am.enemydeath);
         Debug.Log("Bowser's health: " + health);
         HandleDeath();
         hasBeenHit = true;                 // 設定已受擊標記
@@ -81,6 +108,7 @@ public class BowserController : MonoBehaviour
         if (health <= 0)
         {
             Destroy(gameObject, 1f);
+            am.switchbgm(am.winbgm);
         }
     }
 
