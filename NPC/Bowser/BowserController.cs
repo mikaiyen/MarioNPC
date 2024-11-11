@@ -68,12 +68,23 @@ public class BowserController : MonoBehaviour
         }
     }
 
+    //火球偵測
+    private void OnTriggerEnter(Collider other)
+    {        
+        // 檢查是否與玩家的 Body 碰撞
+        if (other.CompareTag("FireBall"))
+        {
+            GetHit();
+        }
+
+    }
+
     private void checkStartBossFight()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
         // If the distance to the player is greater than maxDistance, return early
-        if (distanceToPlayer < 100f)
+        if (distanceToPlayer < 300f)
         {
             bossActivate=true;
             am.switchbgm(am.bossbgm);
